@@ -14,6 +14,9 @@ const studentRouter = require("./routes/student")
 const classRouter = require("./routes/class")
 const courseRouter = require("./routes/course")
 const assist_classRouter = require("./routes/assist_class")
+const gradeRouter = require("./routes/grade")
+const subjectRouter = require("./routes/subject")
+
 
 const app = express()
 
@@ -48,6 +51,8 @@ app.use("/student", studentRouter)
 app.use("/class", classRouter)
 app.use("/course", courseRouter)
 app.use("/assistclass", assist_classRouter)
+app.use("/grade", gradeRouter)
+app.use("/subject", subjectRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
