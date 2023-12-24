@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const DButils = require("../utils/DButils")
-const { success } = require("../utils/msg")
+const { success, error } = require("../utils/msg")
 router.get("/", async function (request, response, next) {
   try {
     const data = await DButils.excute(schoolSql.getSql, [])
@@ -10,20 +10,44 @@ router.get("/", async function (request, response, next) {
   }
 })
 router.post("/edit", async function (request, response, next) {
-  try {
-    const data = await DButils.excute(schoolSql.updatedSql, [
-      request.body.school_name,
-      request.body.school_address,
-      request.body.school_type,
-      request.body.school_linkman,
-      request.body.school_phone,
-      request.body.school_id,
-    ])
-    response.send(success(data))
-  } catch (error) {
-    next(error)
+  const {
+    school_name,
+    school_address,
+    school_type,
+    school_linkman,
+    school_phone,
+    school_id,
+  } = request.body
+
+  if (
+    !(
+      school_name &&
+      school_address &&
+      school_type &&
+      school_linkman &&
+      school_phone &&
+      school_id
+    )
+  ) {
+    response.send(error("编辑失败"))
+  } else {
+    try {
+      const data = await DButils.excute(schoolSql.updatedSql, [
+        school_name,
+        school_address,
+        school_type,
+        school_linkman,
+        school_phone,
+        school_id,
+      ])
+
+      response.send(success(data))
+    } catch (updateError) {
+      next(updateError)
+    }
   }
 })
+
 const schoolSql = {
   getSql: "select * from school ",
   updatedSql:
