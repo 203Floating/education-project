@@ -1,6 +1,16 @@
 -- Active: 1697098245110@@127.0.0.1@3306@小学教务系统
 
-use mysh;
+ALTER TABLE class ADD COLUMN c_type ENUM('0', '1', '2')
+
+ALTER TABLE student ADD COLUMN stu_sex ENUM('0', '1');
+
+ALTER TABLE class DROP COLUMN c_type;
+
+ALTER TABLE student_extra DROP COLUMN task_id;
+
+ALTER TABLE student DROP COLUMN stu_place;
+
+ALTER TABLE student DROP COLUMN stu_bornDate;
 
 CREATE Table
     user(

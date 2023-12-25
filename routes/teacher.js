@@ -5,9 +5,18 @@ const { success } = require("../utils/msg")
 // 查询教师
 router.post("/", async function (request, response, next) {
   try {
-    console.log(request.body)
-    console.log(teacherSql.searchSql(request.body))
-    const data = await DButils.excute(teacherSql.searchSql(request.body), [])
+    const res1 = await DButils.excute(
+      teacherSql.searchSql(request.body, true),
+      []
+    )
+    const res2 = await DButils.excute(teacherSql.searchSql(request.body), [])
+    const data = res2.map((item) => {
+      return {
+        ...item,
+        total: res1.length,
+      }
+    })
+
     response.send(data)
   } catch (error) {
     next(error)
@@ -51,9 +60,10 @@ router.post("/edit", async function (request, response, next) {
 })
 
 const teacherSql = {
-  searchSql: function (body) {
+  searchSql: function (body, total) {
     let sql = `select * from teacher t join teacher_subject  s on t.t_id = s.t_id `
     let str = ""
+    let offset = 0
     if (body.sub_id) {
       str += ` s.sub_id = '${body.sub_id}'`
     }
@@ -74,6 +84,16 @@ const teacherSql = {
       str += ` t.t_status= '${body.t_status}'`
     }
     if (str != "") sql += `where ${str}`
+    if (!total) {
+      //归类
+      sql += ` ORDER BY t.t_id ASC`
+      // 添加分页
+      if (body.offset) {
+        offset = body.offset * 10
+      }
+      sql += ` LIMIT 10 OFFSET ${offset}`
+    }
+
     return sql
   },
   deleteSql1: function (query) {
