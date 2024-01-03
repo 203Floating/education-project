@@ -16,9 +16,14 @@ const courseRouter = require("./routes/course")
 const assist_classRouter = require("./routes/assist_class")
 const gradeRouter = require("./routes/grade")
 const subjectRouter = require("./routes/subject")
+const timetableRouter = require("./routes/timetable.js")
 
+const { jwtAuth, tokenStr } = require("./utils/JwtUtils.js")
 
 const app = express()
+
+// 框架前置 验证token
+app.use(jwtAuth)
 
 app.use(cors())
 
@@ -53,6 +58,9 @@ app.use("/course", courseRouter)
 app.use("/assistclass", assist_classRouter)
 app.use("/grade", gradeRouter)
 app.use("/subject", subjectRouter)
+app.use("/timetable", timetableRouter)
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -22,6 +22,15 @@ router.post("/", async function (request, response, next) {
     next(error)
   }
 })
+//学生数据更新
+router.post("/update", async function (request, response, next) {
+  try {
+    await DButils.excute(studentSql.updateSql(request.body), [])
+    response.send(success("更新成功"))
+  } catch (error) {
+    next(error)
+  }
+})
 // 删除学生
 router.delete("/delete", async function (request, response, next) {
   try {
@@ -55,7 +64,18 @@ router.post("/edit", async function (request, response, next) {
     next(error)
   }
 })
-
+// 学生兴趣课程管理,兴趣课程更新
+router.post("/updateSubs", async function (request, response, next) {
+  try {
+    const data = await DButils.excute(
+      studentSql.updateSubsSql(request.body),
+      []
+    )
+    response.send(data)
+  } catch (error) {
+    console.log(error)
+  }
+})
 const studentSql = {
   searchSql: function (body, total) {
     let sql =
@@ -104,7 +124,9 @@ const studentSql = {
   deleteSql2: function (query) {
     return `delete from student_extra where stu_id = '${query.stu_id}'`
   },
-
+  updateSql: function (body) {
+    return `UPDATE student_extra SET task_id='${body.task_id}' WHERE stu_id = '${body.stu_id}'`
+  },
   editSql1: function (body) {
     return `UPDATE student SET stu_name = '${body.stu_name}', stu_sex = '${body.stu_sex}',  stu_M='${body.stu_M}' ,stu_linkman='${body.stu_linkman}',stu_IDtype='${body.stu_IDtype}',stu_IDnumber='${body.stu_IDnumber}',stu_phone = '${body.stu_phone}', stu_address = '${body.stu_address}' WHERE stu_id = '${body.stu_id}'`
   },
@@ -118,7 +140,10 @@ const studentSql = {
   insertSql2: function (body) {
     return `INSERT INTO student_extra (stu_id, c_id, g_id) VALUES ('${body.stu_id}', '${body.c_id}', '${body.g_id}')`
   },
-  searchExist: "SELECT * FROM student WHERE stu_id = ?",
+  // searchExist: "SELECT * FROM student WHERE stu_id = ?",
+  updateSubsSql: function (body) {
+    return `UPDATE student_extra SET subs='${body.subs}' WHERE stu_id = '${body.stu_id}'`
+  },
 }
 
 module.exports = router

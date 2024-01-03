@@ -5,6 +5,7 @@ const { success } = require("../utils/msg")
 // 查询教师
 router.post("/", async function (request, response, next) {
   try {
+    console.log(request.body)
     const res1 = await DButils.excute(
       teacherSql.searchSql(request.body, true),
       []

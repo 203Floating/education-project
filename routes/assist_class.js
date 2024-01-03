@@ -5,9 +5,11 @@ const { success, error } = require("../utils/msg")
 // 查询选修课程
 router.post("/", async function (request, response, next) {
   try {
-    const data = await DButils.excute(assistClassSql.searchSql(request.query), [
-      request.ac_id,
-    ])
+    const data = await DButils.excute(
+      assistClassSql.searchSql(request.body),
+      []
+    )
+    console.log(data)
     response.send(success(data))
   } catch (error) {
     next(error)
@@ -26,11 +28,12 @@ router.delete("/delete", async function (request, response, next) {
 router.post("/add", async function (request, response, next) {
   try {
     await DButils.excute(assistClassSql.insertSql, [
-      request.query.ac_id,
-      request.query.ac_name,
-      request.query.sub_year,
-      request.query.g_id,
-      request.query.ac_status,
+      request.body.ac_id,
+      request.body.ac_name,
+      request.body.sub_year,
+      request.body.g_id,
+      request.body.ac_status,
+      request.body.timetable,
     ])
     response.send(success("添加成功"))
   } catch (error) {
@@ -39,12 +42,12 @@ router.post("/add", async function (request, response, next) {
 })
 
 const assistClassSql = {
-  searchSql: (query) => {
-    if (query.ac_id === undefined) return `SELECT * FROM assist_class`
-    else return `SELECT * FROM assist_class WHERE ac_id = ${query.ac_id}`
+  searchSql: (body) => {
+    if (body.ac_id == undefined) return `SELECT * FROM assist_class`
+    else return `SELECT * FROM assist_class WHERE ac_id = ${body.ac_id}`
   },
   deleteSql: `DELETE FROM assist_class WHERE ac_id = ?`,
-  insertSql: `INSERT INTO assist_class (ac_id,ac_name,sub_year,g_id, ac_status) VALUES (?,?,?,?,?)`,
+  insertSql: `INSERT INTO assist_class (ac_id,ac_name,sub_year,g_id, ac_status,timetable) VALUES (?,?,?,?,?,?)`,
 }
 
 module.exports = router

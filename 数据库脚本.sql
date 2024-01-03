@@ -107,6 +107,9 @@ CREATE Table
 
 /* 学生外键表 */
 
+ALTER TABLE student_extra ADD COLUMN task_id VARCHAR(255) NOT NULL;
+
+ALTER TABLE student_extra ADD COLUMN subs VARCHAR(255);
 CREATE Table
     student_extra(
         stu_id int(11) NOT NULL,
@@ -116,7 +119,6 @@ CREATE Table
     );
 
 /* 班级表 */
-
 CREATE Table
     class (
         c_id int(11) NOT NULL AUTO_INCREMENT,
@@ -131,10 +133,25 @@ CREATE Table
     class_extra(
         c_id int(11) NOT NULL,
         t_id VARCHAR(255) NOT NULL,
-        g_id int(11) NOT NULL
+g_id int(11) NOT NULL,
+/* 班课表类型选择 */
+timetable_id VARCHAR(50),
     );
 
+ALTER TABLE class_extra ADD COLUMN timetable_id ENUM('1', '2', '3');
+
+/* 课程数据表 */
+CREATE Table
+    timetable(
+        timetable_id ENUM('1', '2', '3') NOT NULL PRIMARY KEY,
+        day1 VARCHAR(50) NOT NULL,
+        day2 VARCHAR(50) NOT NULL,
+        day3 VARCHAR(50) NOT NULL,
+        day4 VARCHAR(50) NOT NULL,
+        day5 VARCHAR(50) NOT NULL
+    );
 /* 年级表 */
+
 
 CREATE Table
     grade (
@@ -161,10 +178,13 @@ CREATE Table
         ac_name varchar(255) NOT NULL,
         sub_year VARCHAR(255) NOT NULL,
         g_id int(11) NOT NULL,
-        ac_status ENUM('0', '1'),
+/* ac_status ENUM('0', '1'), */
         primary key (ac_id)
     );
 
+ALTER TABLE assist_class
+ADD
+    COLUMN timetable ENUM('1', '2', '3', '4', '5');
 /* 排课 */
 
 CREATE TABLE
@@ -181,37 +201,37 @@ CREATE TABLE
 
 CREATE Table
     course_scheduling_extra(
+/* 选课任务id */
         cs_id int(11) NOT NULL,
-        t_id int(11) NOT NULL,
-        /* 可选课程为字符串类型 */
-        sub_ids VARCHAR(255) NOT NULL,
+/* 选课的课程 */
+/* sub_ids VARCHAR(255) NOT NULL, */
+/* 年级 */
         g_id int(11) NOT NULL,
-        /* 可以选课得对象 */
-        c_ids VARCHAR(255) NOT NULL primary key (cs_id)
+/*  选课的对象*/
+c_ids VARCHAR(255) NOT NULL, primary key (cs_id)
     );
+/* 添加可选课程 */
+ALTER TABLE course_scheduling_extra ADD COLUMN sub_ids VARCHAR(50);
 
 /* 选课互斥 */
 
-CREATE Table
-    course_scheduling_mutual(
-        /* cs_id int(11) NOT NULL, */
-        c_id1 int(11) NOT NULL,
-        c_id2 int(11) NOT NULL
-    );
-
-/* 连选 */
-
-CREATE Table
-    course_scheduling_continue(
-        /* cs_id int(11) NOT NULL, */
-        c_id1 int(11) NOT NULL,
-        c_id2 int(11) NOT NULL
-    );
-
-/* 禁选 */
-
-CREATE Table
-    course_forbid(
+CREATE TABLE
+    course_scheduling_mutual (
         cs_id int(11) NOT NULL,
-        c_id1 int(11) NOT NULL
+        c_ids VARCHAR(255) NOT NULL,
+        /* 联合主键 */
+        PRIMARY KEY (cs_id, c_ids)
+    );
+
+CREATE TABLE
+    course_scheduling_continue (
+        cs_id int(11) NOT NULL,
+        c_ids VARCHAR(255) NOT NULL,
+        /* 联合主键 */
+        PRIMARY KEY (cs_id, c_ids)
+    );
+
+CREATE TABLE course_forbid (
+        cs_id int(11) NOT NULL,
+c_id VARCHAR(255) NOT NULL
     );
