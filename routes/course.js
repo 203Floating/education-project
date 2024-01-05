@@ -46,10 +46,10 @@ router.post("/add", async function (request, response, next) {
 // 修改选课任务状态
 router.post("/updateStatus", async function (request, response, next) {
   try {
-    console.log(request.body,'选课任务状态设置');
+    console.log(request.body, "选课任务状态设置")
     await DButils.excute(courseSql.updateStatusSql1, [
       request.body.cs_status,
-      request.body.cs_id
+      request.body.cs_id,
     ])
     response.send(success("修改成功"))
   } catch (error) {
@@ -189,17 +189,17 @@ const courseSql = {
     let offset = 0
 
     if (body.cs_name) {
-      str += `  course_scheduling.cs_name LIKE %'${body.cs_name}'%`
+      str += ` course_scheduling.cs_name LIKE '%${body.cs_name}%'`
     }
 
     if (body.cs_status) {
-      if (str != "") str += `  ADD  `
-      str += `  course_scheduling.cs_status = '${body.cs_status} '`
+      if (str !== "") str += ` AND`
+      str += ` course_scheduling.cs_status = '${body.cs_status}'`
     }
 
     if (body.cs_id) {
-      if (str != "") str += `  ADD  `
-      str += ` course_scheduling.cs_id = '${body.cs_id} '`
+      if (str !== "") str += ` AND`
+      str += ` course_scheduling.cs_id = '${body.cs_id}'`
     }
 
     if (str !== "") {
@@ -279,7 +279,7 @@ const courseSql = {
   updateStatusSql1:
     "update course_scheduling set cs_status = ? where cs_id = ?",
   updateStatusSql2:
-    "update course_scheduling set cs_max = ? ,cs_min = ? where cs_id = ?",
+    "update  course_scheduling    set cs_max = ? ,cs_min = ? where cs_id = ?",
   updateStatusSql3:
     "update course_scheduling_extra set sub_ids = ? where cs_id = ?",
   searchClassSql: "select * from assist_class where ac_id = ?",

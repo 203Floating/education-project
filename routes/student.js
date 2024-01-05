@@ -128,17 +128,17 @@ const studentSql = {
     return `UPDATE student_extra SET task_id='${body.task_id}' WHERE stu_id = '${body.stu_id}'`
   },
   editSql1: function (body) {
-    return `UPDATE student SET stu_name = '${body.stu_name}', stu_sex = '${body.stu_sex}',  stu_M='${body.stu_M}' ,stu_linkman='${body.stu_linkman}',stu_IDtype='${body.stu_IDtype}',stu_IDnumber='${body.stu_IDnumber}',stu_phone = '${body.stu_phone}', stu_address = '${body.stu_address}' WHERE stu_id = '${body.stu_id}'`
+    return `UPDATE student SET stu_name = '${body.stu_name}', stu_sex = '${body.stu_sex}',  stu_M='${body.stu_M}' ,stu_linkman='${body.stu_linkman}',stu_IDtype='${body.stu_IDtype}',stu_IDnumber='${body.stu_IDnumber}',stu_phone = '${body.stu_phone}', stu_address = '${body.stu_address}'WHERE stu_id = '${body.stu_id}'`
   },
   editSql2: function (body) {
-    return `UPDATE student_extra SET c_id = '${body.c_id}', g_id = '${body.g_id}' WHERE stu_id = '${body.stu_id}'`
+    return `UPDATE student_extra SET c_id = '${body.c_id}', g_id = '${body.g_id}'  WHERE stu_id = '${body.stu_id}'`
   },
   insertSql1: function (body) {
     return `INSERT INTO student (stu_id, stu_name, stu_phone, stu_address,stu_sex,stu_M,stu_IDtype,stu_IDnumber,stu_linkman,stu_createDate
       ) VALUES ('${body.stu_id}', '${body.stu_name}', '${body.stu_phone}', '${body.stu_address}','${body.stu_sex}','${body.stu_M}','${body.stu_IDtype}','${body.stu_IDnumber}','${body.stu_linkman}',NOW())`
   },
   insertSql2: function (body) {
-    return `INSERT INTO student_extra (stu_id, c_id, g_id) VALUES ('${body.stu_id}', '${body.c_id}', '${body.g_id}')`
+    return `INSERT INTO student_extra (stu_id, c_id, g_id,task_id) VALUES ('${body.stu_id}', '${body.c_id}', '${body.g_id}','-1')`
   },
   // searchExist: "SELECT * FROM student WHERE stu_id = ?",
   updateSubsSql: function (body) {

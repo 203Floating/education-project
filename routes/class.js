@@ -46,26 +46,20 @@ router.post("/edit", async function (request, response, next) {
       request.body.c_id,
     ])
     if (res.length === 0) {
-      await editData(request.body, classSql.insertSql1, classSql.insertSql2)
+      await DButils.excute(classSql.insertSql1(request.body), [])
+      await DButils.excute(classSql.insertSql2(request.body), [])
+
       response.send(success("添加成功"))
     } else {
-      await editData(request.body, classSql.updateSql1, classSql.updateSql2)
+      await DButils.excute(classSql.updateSql1(request.body), [])
+      await DButils.excute(classSql.updateSql2(request.body), [])
+
       response.send(success("修改成功"))
     }
   } catch (error) {
     next(error)
   }
 })
-// 班级编辑
-const editData = async (body, sql1, sql2) => {
-  await DButils.excute(sql1, [
-    body.c_name,
-    body.c_headmaster,
-    body.c_type,
-    body.c_id,
-  ])
-  await DButils.excute(sql2, [body.g_id, body.t_id, body.c_id])
-}
 const classSql = {
   searchSql: function (body, total) {
     let offset = 0
@@ -81,7 +75,6 @@ const classSql = {
     } else {
       str = ""
     }
-
     if (str !== "") sql += ` ${str}`
 
     if (!total) {
@@ -98,12 +91,20 @@ const classSql = {
   },
 
   // 更新班级数据
-  updateSql1: `UPDATE class SET c_name = ?, c_headmaster = ?, c_type = ? WHERE c_id = ?`,
-  updateSql2: `UPDATE class_extra SET g_id = ?, t_id = ? WHERE c_id = ?`,
+  updateSql1: function (body) {
+    return `UPDATE class SET c_name = '${body.c_name}', c_headmaster = '${body.c_headmaster}', c_type = '${body.c_type}' WHERE c_id = '${body.c_id}'`
+  },
+  updateSql2: function (body) {
+    return `UPDATE class_extra SET g_id = '${body.g_id}', t_id = '${body.t_id}' ,timetable_id = '${body.timetable_id}' WHERE c_id = '${body.c_id}'`
+  },
 
   //添加班级
-  insertSql1: `INSERT INTO class (c_name,c_headmaster,c_type,c_id) VALUES (?,?,?,?)`,
-  insertSql2: `INSERT INTO class_extra (g_id,t_id,c_id) VALUES (?,?,?)`,
+  insertSql1: function (body) {
+    return `INSERT INTO class (c_name,c_headmaster,c_type,c_id) VALUES ('${body.c_name}','${body.c_headmaster}','${body.c_type}','${body.c_id}')`
+  },
+  insertSql2: function (body) {
+    return `INSERT INTO class_extra (g_id,t_id,c_id,timetable_id) VALUES ('${body.g_id}','${body.t_id}','${body.c_id}','${body.timetable_id}')`
+  },
   //删除班级
   deleteSql1: `DELETE FROM class WHERE c_id = ?`,
   deleteSql2: `DELETE FROM class_extra WHERE c_id = ?`,
